@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Каталог — rently</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <script defer src="assets/js/app.js"></script>
+  <script defer src="assets/js/catalog.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a class="logo" href="index.html">rently</a>
+    <nav class="nav">
+      <a href="catalog.html" class="active">Каталог</a>
+      <a href="add.html">Сдать в аренду</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <h1>Каталог</h1>
+  <div class="filters">
+    <input id="q" type="search" placeholder="Поиск по названию или описанию">
+    <select id="category"></select>
+    <select id="district"></select>
+    <select id="sort">
+      <option value="relevance">Сортировка: По релевантности</option>
+      <option value="price_asc">Цена, сначала дешёвые</option>
+      <option value="price_desc">Цена, сначала дорогие</option>
+    </select>
+  </div>
+  <div id="catalog-grid" class="grid"></div>
+  <div id="empty" class="empty hidden">Ничего не найдено. Измени фильтры.</div>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>rently — MVP</div>
+    <div><a href="about.html">О проекте</a></div>
+  </div>
+</footer>
+</body>
+</html>

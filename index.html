@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>rently — Аренда вещей</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <script defer src="assets/js/app.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a class="logo" href="index.html">rently</a>
+    <nav class="nav">
+      <a href="catalog.html">Каталог</a>
+      <a href="add.html">Сдать в аренду</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="hero">
+    <h1>Аренда вещей в Берлине — быстро и без лишних затрат</h1>
+    <p>Спорт, инструменты, электроника, праздники, детские товары — найди и возьми в аренду рядом с тобой.</p>
+    <form class="hero-search" action="catalog.html">
+      <input type="search" name="q" placeholder="Поиск: дрель, велосипед, проектор..." aria-label="Поиск">
+      <button type="submit">Найти</button>
+    </form>
+    <div class="chips" id="home-cats">
+      <!-- filled by JS -->
+    </div>
+  </section>
+
+  <section>
+    <h2>Популярное</h2>
+    <div id="popular-grid" class="grid"></div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <strong>rently</strong><br>
+      MVP для теста спроса. Без регистрации и оплаты на сайте.
+    </div>
+    <div>
+      <a href="about.html">О проекте</a><br>
+      <a href="add.html">Сдать вещь</a>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

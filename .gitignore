@@ -1,0 +1,11 @@
+# PyCharm / macOS
+.idea/
+.DS_Store
+
+# Node / build (на будущее)
+node_modules/
+dist/
+build/
+
+# Служебные
+*.log
