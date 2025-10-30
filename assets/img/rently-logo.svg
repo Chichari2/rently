@@ -1,0 +1,9 @@
+
+<svg width="500" height="100" xmlns="http://www.w3.org/2000/svg">
+  <text x="0" y="68" font-family="Inter, Arial, sans-serif" font-size="64" font-weight="800" fill="#111">RENT</text>
+  <path d="M245 46 H208" stroke="#37C871" stroke-width="8" stroke-linecap="round"/>
+  <polygon points="208,39 194,46 208,53" fill="#37C871"/>
+  <path d="M257 46 H294" stroke="#37C871" stroke-width="8" stroke-linecap="round"/>
+  <polygon points="294,39 308,46 294,53" fill="#37C871"/>
+  <text x="335" y="68" font-family="Inter, Arial, sans-serif" font-size="64" font-weight="800" fill="#111">LY</text>
+</svg>
