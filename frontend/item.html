@@ -5,13 +5,16 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Предмет — rently</title>
   <link rel="stylesheet" href="assets/css/styles.css">
+  <script defer src="assets/js/i18n.js"></script>
   <script defer src="assets/js/app.js"></script>
   <script defer src="assets/js/item.js"></script>
 </head>
 <body>
 <header class="site-header">
   <div class="container">
-    <a class="logo" href="index.html">rently</a>
+    <a class="logo" href="index.html">
+      <img src="assets/img/rently-logo.svg" alt="Rently" height="32">
+    </a>
     <nav class="nav">
       <a href="catalog.html">Каталог</a>
       <a href="add.html">Сдать в аренду</a>
@@ -21,14 +24,14 @@
 
 <main class="container">
   <div id="item-wrap" class="item-wrap">
-    <!-- Filled by JS -->
+    <!-- Filled by item.js -->
   </div>
 </main>
 
 <footer class="site-footer">
   <div class="container footer-grid">
     <div>rently — MVP</div>
-    <div><a href="about.html">О проекте</a></div>
+    <div><a href="add.html">Сдать вещь</a></div>
   </div>
 </footer>
 </body>

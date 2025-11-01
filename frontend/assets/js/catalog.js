@@ -1,5 +1,5 @@
 // === CONFIG ===
-const API_BASE = "https://rently-api.onrender.com"; // ← подставь свой URL с Render
+const API_BASE = "http://127.0.0.1:8000";
 const ITEMS_URL = `${API_BASE}/items`;
 
 // Коды категорий -> человекочитаемое (RU). Потом подкинем EN/DE через i18n.

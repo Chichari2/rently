@@ -1,11 +1,25 @@
-# PyCharm / macOS
+# IDE / OS
 .idea/
 .DS_Store
 
-# Node / build (на будущее)
+# Python
+__pycache__/
+*.py[cod]
+*.so
+
+# Virtual env
+.venv/
+
+# Env files
+.env
+.env.*
+
+# Local data
+*.db
+*.sqlite3
+*.log
+
+# Frontend build (на будущее)
 node_modules/
 dist/
 build/
-
-# Служебные
-*.log

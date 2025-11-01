@@ -1,11 +1,13 @@
 <!doctype html>
-<html lang="ru">
+<html lang="de">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>rently — Аренда вещей</title>
+  <title>rently — Dinge in Berlin mieten</title>
   <link rel="stylesheet" href="assets/css/styles.css">
-  <script defer src="assets/js/app.js"></script>
+  <!-- добавил версионирование, чтобы PyCharm/браузер не кешировали -->
+  <script defer src="assets/js/i18n.js?v=2"></script>
+  <script defer src="assets/js/app.js?v=2"></script>
 </head>
 <body>
 <header class="site-header">
@@ -13,28 +15,39 @@
     <a class="logo" href="index.html">
       <img src="assets/img/rently-logo.svg" alt="Rently" height="32">
     </a>
+
     <nav class="nav">
-      <a href="catalog.html">Каталог</a>
-      <a href="add.html">Сдать в аренду</a>
+      <a id="nav-catalog" href="catalog.html">Katalog</a>
+      <a id="nav-add" href="add.html">Vermieten</a>
     </nav>
+
+    <!-- мини-переключатель языка -->
+    <div class="nav" style="gap:.5rem; margin-left:auto">
+      <button type="button" class="chip" onclick="setLang('de')">DE</button>
+      <button type="button" class="chip" onclick="setLang('en')">EN</button>
+      <button type="button" class="chip" onclick="setLang('ru')">RU</button>
+    </div>
   </div>
 </header>
 
 <main class="container">
   <section class="hero">
-    <h1>Аренда вещей в Берлине — быстро и без лишних затрат</h1>
-    <p>Спорт, инструменты, электроника, праздники, детские товары — найди и возьми в аренду рядом с тобой.</p>
+    <h1 id="t_rent_title">Dinge in Berlin mieten — schnell und günstig</h1>
+    <p id="t_rent_sub">
+      Sport, Werkzeuge, Elektronik, Partyartikel, Kinderbedarf — finde und miete in deiner Nähe.
+    </p>
+
     <form class="hero-search" action="catalog.html">
-      <input type="search" name="q" placeholder="Поиск: дрель, велосипед, проектор..." aria-label="Поиск">
-      <button type="submit">Найти</button>
+      <input id="t_search" type="search" name="q"
+             placeholder="Suche: Bohrer, Fahrrad, Beamer..." aria-label="Suche">
+      <button id="t_find_btn" type="submit">Suchen</button>
     </form>
-    <div class="chips" id="home-cats">
-      <!-- filled by JS -->
-    </div>
+
+    <div class="chips" id="home-cats"></div>
   </section>
 
   <section>
-    <h2>Популярное</h2>
+    <h2 id="t_popular">Beliebt</h2>
     <div id="popular-grid" class="grid"></div>
   </section>
 </main>
@@ -43,11 +56,11 @@
   <div class="container footer-grid">
     <div>
       <strong>rently</strong><br>
-      MVP для теста спроса. Без регистрации и оплаты на сайте.
+      <span id="t_footer_note">MVP zur Nachfrageprüfung. Keine Registrierung oder Zahlungen auf der Website.</span>
     </div>
     <div>
-      <a href="about.html">О проекте</a><br>
-      <a href="add.html">Сдать вещь</a>
+      <a id="t_footer_about" href="about.html">Über das Projekt</a><br>
+      <a id="t_footer_add" href="add.html">Artikel einstellen</a>
     </div>
   </div>
 </footer>

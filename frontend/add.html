@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Сдать вещь в аренду — rently</title>
   <link rel="stylesheet" href="assets/css/styles.css">
+  <script defer src="assets/js/i18n.js"></script>
   <script defer src="assets/js/app.js"></script>
 </head>
 <body>
@@ -87,9 +88,9 @@
 </footer>
 
 <script>
-const API_BASE = "https://rently-api.onrender.com"; // ← подставь свой URL с Render
+const API_BASE = "http://127.0.0.1:8000";
 
-// показать плашку успеха по ?ok=1
+// показать «успех» по ?ok=1
 (function() {
   const ok = new URLSearchParams(location.search).get('ok');
   if (ok === '1') {
@@ -104,7 +105,7 @@ document.getElementById('add-form')?.addEventListener('submit', async (e) => {
   const fd = new FormData(e.target);
   const payload = Object.fromEntries(fd.entries());
   payload.price_per_day = Number(payload.price_per_day || 0);
-  payload.status = 'public'; // или 'pending' если нужна модерация
+  payload.status = 'public';
 
   try {
     const res = await fetch(`${API_BASE}/items`, {
