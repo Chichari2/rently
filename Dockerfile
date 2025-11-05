@@ -8,10 +8,11 @@ RUN pip install --no-cache-dir --upgrade pip
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# копируем backend и frontend
+# код приложения (backend + frontend + alembic файлы)
 COPY app ./app
 COPY frontend ./frontend
+COPY alembic.ini .
+COPY alembic ./alembic
 
-# Render предоставляет $PORT; падать нельзя
-CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
-
+# На Render переменная $PORT задана автоматически
+CMD ["sh", "-c", "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
