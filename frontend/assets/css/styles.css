@@ -37,3 +37,37 @@ a{color:inherit;text-decoration:none}
   .filters{grid-template-columns:1fr 1fr;grid-auto-rows:auto}
   .item-wrap{grid-template-columns:1fr}
 }
+/* CTA в хедере */
+.nav .cta{
+  padding:8px 14px;
+  border-radius:8px;
+  background:#000;
+  color:#fff;
+  text-decoration:none;
+  font-weight:600;
+}
+.nav .cta:hover{opacity:.9}
+
+/* Подсветка карточки (после добавления) */
+.card.highlight{
+  outline:2px solid #4CAF50;
+  outline-offset:3px;
+}
+
+/* Фильтры каталога */
+.filters{
+  display:grid;
+  grid-template-columns:1fr 200px 220px 160px; /* поиск / категория / район / сортировка */
+  gap:12px;
+  margin:12px 0 20px;
+}
+@media (max-width:800px){
+  .filters{grid-template-columns:1fr}
+}
+
+/* Небольшие улучшения формы */
+.form label{display:block;margin:10px 0}
+.form input,.form select,.form textarea{
+  width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:10px;background:#fff
+}
+.btn.primary{background:#111;color:#fff;border-color:#111}

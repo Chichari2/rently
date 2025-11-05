@@ -1,129 +1,111 @@
 <!doctype html>
-<html lang="ru">
+<html lang="de">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Сдать вещь в аренду — rently</title>
+  <title>Artikel einstellen — rently</title>
   <link rel="stylesheet" href="assets/css/styles.css">
-  <script defer src="assets/js/i18n.js"></script>
-  <script defer src="assets/js/app.js"></script>
 </head>
 <body>
 <header class="site-header">
   <div class="container">
     <a class="logo" href="index.html"><img src="assets/img/rently-logo.svg" alt="Rently" height="32"></a>
     <nav class="nav">
-      <a href="catalog.html">Каталог</a>
-      <a href="add.html" class="active">Сдать в аренду</a>
+      <a href="catalog.html">Katalog</a>
+      <a href="add.html" class="cta">Artikel einstellen</a>
     </nav>
   </div>
 </header>
 
-<main class="container narrow">
-  <h1>Сдать вещь в аренду</h1>
-
-  <div id="submit-ok" class="notice success" style="display:none">
-    ✅ Заявка отправлена! После проверки она появится в каталоге.
-  </div>
+<main class="container">
+  <h1>Artikel einstellen</h1>
 
   <form id="add-form" class="form">
-    <div class="field">
-      <label>Название*</label>
-      <input type="text" name="title" required placeholder="Перфоратор Bosch GBH 2-28">
-    </div>
+    <label>Titel* <input name="title" required placeholder="Bohrhammer Bosch GBH 2-28"></label>
 
-    <div class="field two">
-      <div>
-        <label>Категория*</label>
-        <select name="category_code" required>
-          <option value="tools">Инструменты</option>
-          <option value="electronics">Электроника</option>
-          <option value="sports">Спорт</option>
-          <option value="party">Праздники</option>
-          <option value="kids">Детские товары</option>
-        </select>
-      </div>
-      <div>
-        <label>Район*</label>
-        <input type="text" name="district" required placeholder="Friedrichshain / Mitte / Pankow">
-      </div>
-    </div>
+    <label>Kategorie*
+      <select name="category_code" required>
+        <option value="tools">Werkzeuge</option>
+        <option value="electronics">Elektronik</option>
+        <option value="sports">Sport</option>
+        <option value="party">Partyartikel</option>
+        <option value="kids">Kinderbedarf</option>
+      </select>
+    </label>
 
-    <div class="field two">
-      <div>
-        <label>Цена за день (€)*</label>
-        <input type="number" name="price_per_day" min="1" step="1" required>
-      </div>
-      <div>
-        <label>Ссылка на фото</label>
-        <input type="url" name="image_url" placeholder="https://…">
-      </div>
-    </div>
+    <label>Bezirk*
+      <select name="district" required>
+        <option value="Mitte">Mitte</option>
+        <option value="Friedrichshain-Kreuzberg">Friedrichshain-Kreuzberg</option>
+        <option value="Pankow">Pankow</option>
+        <option value="Charlottenburg-Wilmersdorf">Charlottenburg-Wilmersdorf</option>
+        <option value="Spandau">Spandau</option>
+        <option value="Steglitz-Zehlendorf">Steglitz-Zehlendorf</option>
+        <option value="Tempelhof-Schöneberg">Tempelhof-Schöneberg</option>
+        <option value="Neukölln">Neukölln</option>
+        <option value="Treptow-Köpenick">Treptow-Köpenick</option>
+        <option value="Marzahn-Hellersdorf">Marzahn-Hellersdorf</option>
+        <option value="Lichtenberg">Lichtenberg</option>
+        <option value="Reinickendorf">Reinickendorf</option>
+      </select>
+    </label>
 
-    <div class="field">
-      <label>Описание</label>
-      <textarea name="description" rows="4" placeholder="Состояние, комплект, условия выдачи…"></textarea>
-    </div>
+    <label>Preis pro Tag (€)* <input name="price_per_day" type="number" min="1" required></label>
+    <label>Bild-URL <input name="image_url" placeholder="https://…"></label>
+    <label>Beschreibung <textarea name="description" placeholder="Zustand, Zubehör, Übergabe…"></textarea></label>
+    <label>Telefon <input name="phone" placeholder="+49…"></label>
+    <label>Telegram <input name="telegram" placeholder="@username"></label>
 
-    <div class="field two">
-      <div>
-        <label>Телефон</label>
-        <input type="tel" name="phone" placeholder="+49…">
-      </div>
-      <div>
-        <label>Telegram</label>
-        <input type="text" name="telegram" placeholder="@username">
-      </div>
-    </div>
-
-    <button type="submit" class="btn primary">Отправить</button>
+    <button type="submit" class="btn primary">Veröffentlichen</button>
   </form>
+
+  <div id="add-note" class="muted" style="margin-top:8px;"></div>
 </main>
 
 <footer class="site-footer">
   <div class="container footer-grid">
     <div>rently — MVP</div>
-    <div></div>
+    <div><a href="about.html">Über das Projekt</a></div>
   </div>
 </footer>
 
-<script>
-const API_BASE = "http://127.0.0.1:8000";
+<script type="module">
+  const DATA_URL = '/items';
+  const form = document.getElementById('add-form');
+  const note = document.getElementById('add-note');
 
-// показать «успех» по ?ok=1
-(function() {
-  const ok = new URLSearchParams(location.search).get('ok');
-  if (ok === '1') {
-    const el = document.getElementById('submit-ok');
-    if (el) el.style.display = 'block';
-    history.replaceState(null, '', location.pathname);
-  }
-})();
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    note.textContent = 'Sende…';
 
-document.getElementById('add-form')?.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const fd = new FormData(e.target);
-  const payload = Object.fromEntries(fd.entries());
-  payload.price_per_day = Number(payload.price_per_day || 0);
-  payload.status = 'public';
+    const fd = new FormData(form);
+    const payload = {
+      title: (fd.get('title') || '').trim(),
+      category_code: fd.get('category_code'),
+      district: fd.get('district'),
+      price_per_day: Number(fd.get('price_per_day')),
+      image_url: (fd.get('image_url') || '').trim(),
+      description: (fd.get('description') || '').trim(),
+      phone: (fd.get('phone') || '').trim(),
+      telegram: (fd.get('telegram') || '').trim()
+    };
 
-  try {
-    const res = await fetch(`${API_BASE}/items`, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(payload)
-    });
-    if (!res.ok) {
-      const txt = await res.text();
-      alert('Ошибка: ' + txt);
-      return;
+    try {
+      const res = await fetch(DATA_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const created = await res.json();
+
+      note.textContent = 'Fertig! Weiterleitung…';
+      location.href = `catalog.html?added=${encodeURIComponent(created.id)}&category=${encodeURIComponent(created.category_code)}`;
+    } catch (err) {
+      console.error(err);
+      note.textContent = 'Fehler beim Senden. Bitte Daten und Server prüfen.';
     }
-    location.href = 'catalog.html?ok=1';
-  } catch (err) {
-    console.error(err);
-    alert('Сеть недоступна. Попробуйте позже.');
-  }
-});
+  });
 </script>
 </body>
 </html>

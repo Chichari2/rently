@@ -1,4 +1,4 @@
-const API_BASE = "http://127.0.0.1:8000";
+const DATA_URL = '/items';
 
 async function fetchJSON(url){
   const res = await fetch(url, {cache: "no-store"});
@@ -12,48 +12,41 @@ function el(html){
   return t.content.firstElementChild;
 }
 
-function money(v){ return v != null ? `${v}€ / день` : "—"; }
+function money(v){ return v != null ? `${v} € / Tag` : "—"; }
 
-async function initItem(){
+document.addEventListener("DOMContentLoaded", async () => {
   const id = new URLSearchParams(location.search).get("id");
   const wrap = document.getElementById("item-wrap");
-  if(!id){ wrap.textContent = "Не указан id предмета."; return; }
+  if(!id){ wrap.textContent = "Parameter 'id' fehlt."; return; }
 
   try{
-    const i = await fetchJSON(`${API_BASE}/items/${encodeURIComponent(id)}`);
-    const category = (i.category_code || "—");
+    const i = await fetchJSON(`${DATA_URL}/${encodeURIComponent(id)}`);
     const img = i.image_url || "assets/img/placeholder.jpg";
 
     wrap.innerHTML = "";
     wrap.appendChild(el(`
       <article class="item">
-        <div class="item-media">
-          <img src="${img}" alt="">
-        </div>
-        <div class="item-body">
+        <div class="item-gallery"><img src="${img}" alt=""></div>
+        <div class="item-info">
           <h1>${i.title || "—"}</h1>
-          <div class="muted">${category} · ${i.district || "—"}</div>
+          <div class="muted">${i.category_code || "—"} · ${i.district || "—"}</div>
           <div class="price big">${money(i.price_per_day)}</div>
           <p>${i.description || ""}</p>
 
-          <div class="card">
-            <div class="muted">Контакты</div>
-            <div>Телефон: ${i.phone || "—"}</div>
+          <div class="card" style="padding:12px;margin-top:12px">
+            <div class="muted">Kontakt</div>
+            <div>Telefon: ${i.phone || "—"}</div>
             <div>Telegram: ${i.telegram || "—"}</div>
           </div>
 
-          <div class="actions">
-            <a class="btn" href="catalog.html">← Вернуться в каталог</a>
+          <div class="actions" style="margin-top:12px">
+            <a class="btn" href="catalog.html">← Zurück zum Katalog</a>
           </div>
         </div>
       </article>
     `));
   }catch(err){
     console.error(err);
-    wrap.textContent = "Не удалось загрузить предмет.";
+    wrap.textContent = "Artikel konnte nicht geladen werden.";
   }
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  initItem().catch(console.error);
 });

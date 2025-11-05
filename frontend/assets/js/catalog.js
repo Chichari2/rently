@@ -1,45 +1,35 @@
-// === CONFIG ===
-const API_BASE = "http://127.0.0.1:8000";
-const ITEMS_URL = `${API_BASE}/items`;
+import { DATA_URL, fetchJSON, el, linkToItem, money } from './app.js';
 
-// Коды категорий -> человекочитаемое (RU). Потом подкинем EN/DE через i18n.
 const CATEGORY_LABEL = {
-  tools: "Инструменты",
-  electronics: "Электроника",
-  sports: "Спорт",
-  party: "Праздники",
-  kids: "Детские товары"
+  tools: "Werkzeuge",
+  electronics: "Elektronik",
+  sports: "Sport",
+  party: "Partyartikel",
+  kids: "Kinderbedarf"
 };
 
 let __ITEMS = [];
 
-// универсальная загрузка JSON
-async function fetchJSON(url) {
-  const res = await fetch(url, { cache: "no-store" });
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  return res.json();
-}
+function uniq(arr) { return Array.from(new Set(arr.filter(Boolean))); }
 
-function el(html) {
-  const t = document.createElement("template");
-  t.innerHTML = html.trim();
-  return t.content.firstElementChild;
-}
-
-function money(v) {
-  if (v == null || isNaN(v)) return "—";
-  return `${v}€ / день`;
-}
-
-function linkToItem(id) {
-  return `item.html?id=${encodeURIComponent(id)}`;
+function renderCard(i) {
+  const category = CATEGORY_LABEL[i.category_code] || i.category_code || "—";
+  const img = i.image_url || "assets/img/placeholder.jpg";
+  return el(`
+    <a class="card" href="${linkToItem(i.id)}">
+      <img class="thumb" src="${img}" alt="">
+      <div class="pad">
+        <div class="muted">${category} · ${i.district || "—"}</div>
+        <div>${i.title || "—"}</div>
+        <div class="price">${money(i.price_per_day)}</div>
+      </div>
+    </a>
+  `);
 }
 
 async function initCatalog() {
-  // 1) грузим предметы из API
-  __ITEMS = await fetchJSON(ITEMS_URL);
+  __ITEMS = await fetchJSON(DATA_URL);
 
-  // 2) собираем ссылки на элементы
   const params = new URLSearchParams(location.search);
   const qInput = document.getElementById("q");
   const catSel = document.getElementById("category");
@@ -48,25 +38,14 @@ async function initCatalog() {
   const grid   = document.getElementById("catalog-grid");
   const empty  = document.getElementById("empty");
 
-  // 3) подготовка значений фильтров
-  const cats = ["Все категории", ...Array.from(new Set(__ITEMS.map(i => i.category_code).filter(Boolean)))];
-  catSel.innerHTML = cats
-    .map(code => code === "Все категории"
-      ? `<option value="Все категории">Все категории</option>`
-      : `<option value="${code}">${CATEGORY_LABEL[code] || code}</option>`
-    ).join("");
+  const catCodes = uniq(__ITEMS.map(i => i.category_code));
+  // оставляем HTML-опции, просто проставим выбранную при переходе из главной
+  if (params.get("category") && catCodes.includes(params.get("category"))) {
+    catSel.value = params.get("category");
+  }
 
-  const dists = ["Любой район", ...Array.from(new Set(__ITEMS.map(i => i.district).filter(Boolean)))];
-  distSel.innerHTML = dists.map(d => `<option value="${d}">${d}</option>`).join("");
-
-  // 4) читаем параметры из URL
-  qInput.value = params.get("q") || "";
-  const urlCat = params.get("category");
-  if (urlCat && cats.includes(urlCat)) catSel.value = urlCat;
-
-  // 5) функция применения фильтров/сортировки и рендера
   function apply() {
-    const q    = qInput.value.trim().toLowerCase();
+    const q    = (qInput.value || '').toLowerCase().trim();
     const cat  = catSel.value;
     const dist = distSel.value;
     const sort = sortSel.value;
@@ -74,40 +53,45 @@ async function initCatalog() {
     let list = __ITEMS.filter(i => {
       const txt = `${i.title || ""} ${i.description || ""}`.toLowerCase();
       const matchesQ = !q || txt.includes(q);
-      const matchesC = cat === "Все категории" || cat === i.category_code;
-      const matchesD = dist === "Любой район" || dist === i.district;
+      const matchesC = (cat === "all")  || (cat === i.category_code);
+      const matchesD = (dist === "all") || (dist === i.district);
       return matchesQ && matchesC && matchesD;
     });
 
-    if (sort === "price_asc")  list.sort((a, b) => (a.price_per_day || 0) - (b.price_per_day || 0));
-    if (sort === "price_desc") list.sort((a, b) => (b.price_per_day || 0) - (a.price_per_day || 0));
-
-    grid.innerHTML = "";
-    for (const i of list) {
-      const category = CATEGORY_LABEL[i.category_code] || i.category_code || "—";
-      const img = i.image_url || "assets/img/placeholder.jpg";
-      grid.appendChild(el(`
-        <a class="card" href="${linkToItem(i.id)}">
-          <img class="thumb" src="${img}" alt="">
-          <div class="pad">
-            <div class="muted">${category} · ${i.district || "—"}</div>
-            <div>${i.title || "—"}</div>
-            <div class="price">${money(i.price_per_day)}</div>
-          </div>
-        </a>
-      `));
+    switch (sort) {
+      case 'price_asc':  list.sort((a,b) => (a.price_per_day||0) - (b.price_per_day||0)); break;
+      case 'price_desc': list.sort((a,b) => (b.price_per_day||0) - (a.price_per_day||0)); break;
+      case 'newest':     list.sort((a,b) => new Date(b.created_at||0) - new Date(a.created_at||0)); break;
+      default: break;
     }
+
+    grid.innerHTML = '';
+    list.forEach(i => grid.appendChild(renderCard(i)));
     empty.classList.toggle("hidden", list.length > 0);
+
+    const added = params.get('added');
+    if (added) {
+      const node = grid.querySelector(`a.card[href*="id=${CSS.escape(added)}"]`);
+      if (node) {
+        node.classList.add('highlight');
+        node.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
   }
 
-  // 6) подписки
   qInput.addEventListener("input",  apply);
   catSel.addEventListener("change", apply);
   distSel.addEventListener("change", apply);
   sortSel.addEventListener("change", apply);
 
-  // 7) первичный рендер
   apply();
 }
 
-document.addEventListener("DOMContentLoaded", () => initCatalog().catch(console.error));
+document.addEventListener("DOMContentLoaded", () => {
+  initCatalog().catch(err => {
+    console.error(err);
+    const empty  = document.getElementById("empty");
+    empty.textContent = 'Katalog konnte nicht geladen werden. Server prüfen.';
+    empty.classList.remove('hidden');
+  });
+});

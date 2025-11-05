@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
 from typing import List, Optional
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlmodel import Session, select
 from ..db import get_session
 from ..models import Item, ItemCreate, ItemRead
 
 router = APIRouter(prefix="/items", tags=["items"])
+
 
 @router.get("/", response_model=List[ItemRead])
 def list_items(
@@ -13,7 +14,7 @@ def list_items(
     district: Optional[str] = None,
     min_price: Optional[float] = None,
     max_price: Optional[float] = None,
-    session: Session = Depends(get_session)
+    session: Session = Depends(get_session),
 ):
     stmt = select(Item).where(Item.status != "hidden")
     if q:
@@ -29,6 +30,7 @@ def list_items(
         stmt = stmt.where(Item.price_per_day <= max_price)
     return session.exec(stmt.order_by(Item.id.desc())).all()
 
+
 @router.get("/{item_id}", response_model=ItemRead)
 def get_item(item_id: int, session: Session = Depends(get_session)):
     item = session.get(Item, item_id)
@@ -36,9 +38,11 @@ def get_item(item_id: int, session: Session = Depends(get_session)):
         raise HTTPException(404, "Item not found")
     return item
 
+
 @router.post("/", response_model=ItemRead, status_code=201)
 def create_item(data: ItemCreate, session: Session = Depends(get_session)):
-    item = Item.from_orm(data)
+    # pydantic v2-friendly
+    item = Item(**data.model_dump())
     session.add(item)
     session.commit()
     session.refresh(item)
